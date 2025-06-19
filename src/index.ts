@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { AaveProvider } from "./providers/aave/aave.js";
 import { z } from "zod";
+import { resolveProvider } from "./providers/resolver.js";
 
 // Create an MCP server 
 const server = new McpServer({
@@ -14,11 +14,11 @@ server.tool(
   { 
     providerName: z.string(),
     chainName: z.string(),
+    coin: z.string(),
   },
-  async ({ chainName }) => {
-    console.log(chainName);
-    const provider = new AaveProvider();
-    const data = await provider.getPoolReservesAndIncentives();
+  async ({ providerName, coin }) => {
+    const provider = resolveProvider(providerName);
+    const data = await provider.getLiquidityAndApr(coin);
     return {
       content: [{
         type: "text",
