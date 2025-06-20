@@ -16,8 +16,8 @@ server.tool(
     chainName: z.string(),
     coin: z.string(),
   },
-  async ({ providerName, coin }) => {
-    const provider = resolveProvider(providerName);
+  async ({ providerName, coin, chainName }) => {
+    const provider = resolveProvider(providerName, chainName);
     const data = await provider.getLiquidityAndApr(coin);
     return {
       content: [{
