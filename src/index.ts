@@ -28,6 +28,24 @@ server.tool(
   }
 );
 
+server.tool(
+  "get-available-pools",
+  { 
+    providerName: z.string(),
+    chainName: z.string(),
+  },
+  async ({ providerName, chainName }) => {
+    const provider = resolveProvider(providerName, chainName);
+    const pools = await provider.getAvailablePools();
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify(pools)
+      }]
+    };
+  }
+);
+
 // Start receiving messages on stdin and sending messages on stdout
 const transport = new StdioServerTransport();
 await server.connect(transport);

@@ -1,6 +1,6 @@
 import { UiIncentiveDataProvider, UiPoolDataProvider } from "@aave/contract-helpers";
 import { ethers } from "ethers";
-import { formatReservesAndIncentives } from '@aave/math-utils';
+import { formatReserves, formatReservesAndIncentives } from '@aave/math-utils';
 import dayjs from 'dayjs';
 import { PoolData } from "@/types.js";
 import { ProviderInterface } from "../providerInterface.js";
@@ -69,6 +69,23 @@ export class AaveProvider implements ProviderInterface {
             liquidityUsd: poolData.totalLiquidityUSD,
             apr: poolData.supplyAPR
         };
+    }
+
+    public async getAvailablePools() {
+        const reserves = await this.poolDataProviderContract.getReservesHumanized({
+            lendingPoolAddressProvider: this.contractNamespace.POOL_ADDRESSES_PROVIDER,
+        });
+
+        const currentTimestamp = dayjs().unix();
+
+        const poolsData = formatReserves({
+            reserves: reserves.reservesData,
+            currentTimestamp,
+            marketReferenceCurrencyDecimals: reserves.baseCurrencyData.marketReferenceCurrencyDecimals,
+            marketReferencePriceInUsd: reserves.baseCurrencyData.marketReferenceCurrencyPriceInUsd,
+        });
+
+        return poolsData.map((pool) => pool.symbol);
     }
 
     private translateWrappedCoin(coin: string): string {

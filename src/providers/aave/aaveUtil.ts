@@ -10,6 +10,10 @@ export class AaveUtil {
             ['ETH', 'WETH'],
             ['BTC', 'WBTC'],
             ['POL', 'WPOL'],
+            ['AVAX', 'WAVAX'],
+            ['S', 'WS'],
+            ['XDAI', 'WXDAI'],
+            ['BNB', 'WBNB'],
         ]
     );
 
