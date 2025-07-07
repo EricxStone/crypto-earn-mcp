@@ -3,17 +3,27 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsc && node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.24.0",
+    "@babel/preset-env": "^7.24.0",
+    "@babel/preset-typescript": "^7.23.3",
+    "@jest/globals": "^30.0.2",
+    "@types/jest": "^29.5.12",
     "@types/node": "^22.15.29",
+    "babel-jest": "^29.7.0",
+    "jest": "^30.0.2",
+    "ts-jest": "^29.1.2",
     "typescript": "^5.8.3"
   },
   "dependencies": {
@@ -23,6 +33,5 @@
     "@modelcontextprotocol/sdk": "^1.12.1",
     "dayjs": "^1.11.13",
     "ethers": "^5.8.0"
-  },
-  "type": "module"
+  }
 }
