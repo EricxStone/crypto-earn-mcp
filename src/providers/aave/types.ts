@@ -1,6 +1,6 @@
-import * as markets from '@bgd-labs/aave-address-book';
+import * as markets from '@bgd-labs/aave-address-book'
 
-export type AaveMarket = 
+export type AaveMarket =
   | typeof markets.AaveV3Ethereum
   | typeof markets.AaveV3Polygon
   | typeof markets.AaveV3Gnosis
@@ -13,4 +13,4 @@ export type AaveMarket =
   | typeof markets.AaveV3ZkSync
   | typeof markets.AaveV3Linea
   | typeof markets.AaveV3Sonic
-  | typeof markets.AaveV3Celo;
+  | typeof markets.AaveV3Celo

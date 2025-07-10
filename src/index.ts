@@ -1,51 +1,51 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { z } from "zod";
-import { resolveProvider } from "./providers/resolver.js";
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
+import { z } from 'zod'
+import { resolveProvider } from './providers/resolver.js'
 
-// Create an MCP server 
+// Create an MCP server
 const server = new McpServer({
-  name: "crypto-earn",
-  version: "1.0.0"
-});
+  name: 'crypto-earn',
+  version: '1.0.0'
+})
 
 server.tool(
-  "get-market-data",
-  { 
+  'get-market-data',
+  {
     providerName: z.string(),
     chainName: z.string(),
-    coin: z.string(),
+    coin: z.string()
   },
   async ({ providerName, coin, chainName }) => {
-    const provider = resolveProvider(providerName, chainName);
-    const data = await provider.getLiquidityAndApr(coin);
+    const provider = resolveProvider(providerName, chainName)
+    const data = await provider.getLiquidityAndApr(coin)
     return {
       content: [{
-        type: "text",
+        type: 'text',
         text: JSON.stringify(data)
       }]
-    };
+    }
   }
-);
+)
 
 server.tool(
-  "get-available-pools",
-  { 
+  'get-available-pools',
+  {
     providerName: z.string(),
-    chainName: z.string(),
+    chainName: z.string()
   },
   async ({ providerName, chainName }) => {
-    const provider = resolveProvider(providerName, chainName);
-    const pools = await provider.getAvailablePools();
+    const provider = resolveProvider(providerName, chainName)
+    const pools = await provider.getAvailablePools()
     return {
       content: [{
-        type: "text",
+        type: 'text',
         text: JSON.stringify(pools)
       }]
-    };
+    }
   }
-);
+)
 
 // Start receiving messages on stdin and sending messages on stdout
-const transport = new StdioServerTransport();
-await server.connect(transport);
+const transport = new StdioServerTransport()
+await server.connect(transport)

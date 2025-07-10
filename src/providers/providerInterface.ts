@@ -1,7 +1,7 @@
-import { PoolData } from "@/types.js";
+import { PoolData } from '@/types.js'
 
 export interface ProviderInterface {
-    getLiquidityAndApr(coin: string): Promise<PoolData>;
+  getLiquidityAndApr: (coin: string) => Promise<PoolData>
 
-    getAvailablePools(): Promise<String[]>;
+  getAvailablePools: () => Promise<String[]>
 }
