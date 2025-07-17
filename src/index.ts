@@ -2,6 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod'
 import { resolveProvider } from './providers/resolver.js'
+import { ethers } from 'ethers'
 
 // Create an MCP server
 const server = new McpServer({
@@ -41,6 +42,32 @@ server.tool(
       content: [{
         type: 'text',
         text: JSON.stringify(pools)
+      }]
+    }
+  }
+)
+
+server.tool(
+  'get-user-data',
+  {
+    providerName: z.string(),
+    chainName: z.string(),
+    walletAddress: z.custom<`0x${string}`>((val) => {
+      try {
+        ethers.utils.getAddress(val)
+        return true
+      } catch (error) {
+        return false
+      }
+    })
+  },
+  async ({ providerName, chainName, walletAddress }) => {
+    const provider = resolveProvider(providerName, chainName)
+    const data = await provider.getUserData(walletAddress)
+    return {
+      content: [{
+        type: 'text',
+        text: JSON.stringify(data)
       }]
     }
   }

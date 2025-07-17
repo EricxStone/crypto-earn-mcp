@@ -48,7 +48,7 @@ You can use prompt like `What is the APR of ETH on AAVE?`
 |---------|-------------|--------|
 | AAVE Market Data | Get market data from Aave | Done |
 | Multi-chain supported | Support for multiple blockchain networks on AAVE | Done |
-| User Data | Get user-specific data from Aave | Planned |
+| User Data | Get user-specific data from Aave | In progress |
 | Wallet Integration | Connect and interact with user wallets | Planned |
 | Deposit/Withdraw | Interact with smart contracts for deposit and withdraw | Planned |
 | Multi-provider support | Support for multiple providers | Planned |

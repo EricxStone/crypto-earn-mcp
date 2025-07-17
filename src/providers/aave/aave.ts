@@ -1,8 +1,8 @@
 import { UiIncentiveDataProvider, UiPoolDataProvider } from '@aave/contract-helpers'
 import { ethers } from 'ethers'
-import { formatReserves, formatReservesAndIncentives } from '@aave/math-utils'
+import { formatReserves, formatReservesAndIncentives, formatUserSummaryAndIncentives } from '@aave/math-utils'
 import dayjs from 'dayjs'
-import { PoolData } from '@/types.js'
+import { PoolData, UserData } from '@/types.js'
 import { ProviderInterface } from '../providerInterface.js'
 import { resolveRpc } from '../resolver.js'
 import { AaveUtil } from './aaveUtil.js'
@@ -34,13 +34,14 @@ export class AaveProvider implements ProviderInterface {
   }
 
   public async getLiquidityAndApr (coin: string): Promise<PoolData> {
-    const reserves = await this.poolDataProviderContract.getReservesHumanized({
-      lendingPoolAddressProvider: this.contractNamespace.POOL_ADDRESSES_PROVIDER
-    })
-
-    const incentives = await this.incentiveDataProviderContract.getReservesIncentivesDataHumanized({
-      lendingPoolAddressProvider: this.contractNamespace.POOL_ADDRESSES_PROVIDER
-    })
+    const [reserves, incentives] = await Promise.all([
+      this.poolDataProviderContract.getReservesHumanized({
+        lendingPoolAddressProvider: this.contractNamespace.POOL_ADDRESSES_PROVIDER
+      }),
+      this.incentiveDataProviderContract.getReservesIncentivesDataHumanized({
+        lendingPoolAddressProvider: this.contractNamespace.POOL_ADDRESSES_PROVIDER
+      })
+    ])
 
     const currentTimestamp = dayjs().unix()
 
@@ -85,6 +86,60 @@ export class AaveProvider implements ProviderInterface {
     })
 
     return poolsData.map((pool) => pool.symbol)
+  }
+
+  public async getUserData (walletAddress: string): Promise<UserData[]> {
+    const [reserves, incentives, userReserves, userIncentives] = await Promise.all([
+      this.poolDataProviderContract.getReservesHumanized({
+        lendingPoolAddressProvider: this.contractNamespace.POOL_ADDRESSES_PROVIDER
+      }),
+      this.incentiveDataProviderContract.getReservesIncentivesDataHumanized({
+        lendingPoolAddressProvider: this.contractNamespace.POOL_ADDRESSES_PROVIDER
+      }),
+      this.poolDataProviderContract.getUserReservesHumanized({
+        lendingPoolAddressProvider: this.contractNamespace.POOL_ADDRESSES_PROVIDER,
+        user: walletAddress
+      }),
+      this.incentiveDataProviderContract.getUserReservesIncentivesDataHumanized({
+        lendingPoolAddressProvider: this.contractNamespace.POOL_ADDRESSES_PROVIDER,
+        user: walletAddress
+      })
+    ])
+
+    const currentTimestamp = dayjs().unix()
+
+    const formattedReserves = formatReserves({
+      reserves: reserves.reservesData,
+      currentTimestamp,
+      marketReferenceCurrencyDecimals: reserves.baseCurrencyData.marketReferenceCurrencyDecimals,
+      marketReferencePriceInUsd: reserves.baseCurrencyData.marketReferenceCurrencyPriceInUsd
+    })
+
+    const userSummary = formatUserSummaryAndIncentives({
+      currentTimestamp,
+      marketReferencePriceInUsd: reserves.baseCurrencyData.marketReferenceCurrencyPriceInUsd,
+      marketReferenceCurrencyDecimals:
+        reserves.baseCurrencyData.marketReferenceCurrencyDecimals,
+      userReserves: userReserves.userReserves,
+      formattedReserves,
+      userEmodeCategoryId: userReserves.userEmodeCategoryId,
+      reserveIncentives: incentives,
+      userIncentives
+    })
+
+    const userData = userSummary.userReservesData.filter((data) =>
+      parseFloat(data.underlyingBalance) > 0
+    )
+
+    return userData.map((data): UserData => ({
+      symbol: data.reserve.symbol,
+      tokenContractAddress: data.underlyingAsset,
+      poolLiquidity: data.reserve.totalLiquidity,
+      poolLiquidityUsd: data.reserve.totalLiquidityUSD,
+      totalBalance: data.underlyingBalance,
+      totalBalanceUsd: data.underlyingBalanceUSD,
+      apr: data.reserve.supplyAPR
+    }))
   }
 
   private translateWrappedCoin (coin: string): string {
