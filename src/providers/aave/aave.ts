@@ -33,6 +33,9 @@ export class AaveProvider implements ProviderInterface {
     })
   }
 
+  /**
+   * @inheritdoc ProviderInterface
+   */
   public async getLiquidityAndApr (coin: string): Promise<PoolData> {
     const [reserves, incentives] = await Promise.all([
       this.poolDataProviderContract.getReservesHumanized({
@@ -71,6 +74,9 @@ export class AaveProvider implements ProviderInterface {
     }
   }
 
+  /**
+   * @inheritdoc ProviderInterface
+   */
   public async getAvailablePools (): Promise<string[]> {
     const reserves = await this.poolDataProviderContract.getReservesHumanized({
       lendingPoolAddressProvider: this.contractNamespace.POOL_ADDRESSES_PROVIDER
@@ -88,6 +94,9 @@ export class AaveProvider implements ProviderInterface {
     return poolsData.map((pool) => pool.symbol)
   }
 
+  /**
+   * @inheritdoc ProviderInterface
+   */
   public async getUserData (walletAddress: string): Promise<UserData[]> {
     const [reserves, incentives, userReserves, userIncentives] = await Promise.all([
       this.poolDataProviderContract.getReservesHumanized({
