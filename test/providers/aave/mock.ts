@@ -1,62 +1,16 @@
-/* eslint-env jest */
+import { jest } from '@jest/globals';
 
-import { describe, test, expect, jest, beforeEach } from '@jest/globals';
-import { AaveProvider } from '../../src/providers/aave/aave.js';
-
-// Mock the Aave contract helpers
-
-const mockUiPoolDataProvider = {
+export const mockUiPoolDataProvider = {
   getReservesHumanized: jest.fn<(...args: any[]) => Promise<any>>(),
+  getUserReservesHumanized: jest.fn<(...args: any[]) => Promise<any>>(),
 };
 
-const mockUiIncentiveDataProvider = {
+export const mockUiIncentiveDataProvider = {
   getReservesIncentivesDataHumanized: jest.fn<(...args: any[]) => Promise<any>>(),
+  getUserReservesIncentivesDataHumanized: jest.fn<(...args: any[]) => Promise<any>>(),
 };
 
-jest.mock('@aave/contract-helpers', () => ({
-  UiPoolDataProvider: jest.fn().mockImplementation(() => mockUiPoolDataProvider),
-  UiIncentiveDataProvider: jest.fn().mockImplementation(() => mockUiIncentiveDataProvider),
-  ChainId: {
-    mainnet: 1,
-  }
-}));
-
-describe('AaveProvider', () => {
-  beforeEach(() => {
-    // Reset all mocks before each test
-    jest.clearAllMocks();
-    mockDataProvider();
-  });
-    
-
-  test('should return liquidity and APR for pool', async () => {
-    const provider = new AaveProvider('mainnet');
-    
-    const result = await provider.getLiquidityAndApr('DAI');
-    
-    // Verify the result structure
-    expect(result).toHaveProperty('liquidity');
-    expect(result).toHaveProperty('apr');
-  });
-
-  test('should return error for invalid pool', async () => {
-    const provider = new AaveProvider('mainnet');
-    
-    await expect(provider.getLiquidityAndApr('INVALID_POOL')).rejects.toThrow('Pool not found');
-  });
-
-  test('should return available pool', async () => {
-    const provider = new AaveProvider('mainnet');
-    
-    const result = await provider.getAvailablePools();
-    
-    // Verify the result structure
-    expect(result).toHaveLength(2);
-    expect(result).toEqual(['DAI', 'LINK']);
-  });
-});
-
-function mockDataProvider() {
+export const mockMarketDataProvider = () => {
   // Setup default mocks for the contract methods
   mockUiPoolDataProvider.getReservesHumanized.mockResolvedValue({
     reservesData: [
@@ -189,4 +143,57 @@ function mockDataProvider() {
       }
     },
   ]);
+}
+
+export const mockUserDataProvider = () => {
+    mockUiPoolDataProvider.getUserReservesHumanized.mockResolvedValue({
+        userReserves: [
+            {
+                id: '137-0x9528b7a0954f13fd59d91768ae23b5e836de7ce2-0x8f3cf7ad23cd3cadbd9735aff958023239c6a063-0xa97684ead0e402dc232d5a977953df7ecbab3cdb',
+                underlyingAsset: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
+                scaledATokenBalance: '0',
+                usageAsCollateralEnabledOnUser: false,
+                scaledVariableDebt: '0'
+            },
+            {
+                id: '137-0x9528b7a0954f13fd59d91768ae23b5e836de7ce2-0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39-0xa97684ead0e402dc232d5a977953df7ecbab3cdb',
+                underlyingAsset: '0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39',
+                scaledATokenBalance: '7930362492',
+                usageAsCollateralEnabledOnUser: true,
+                scaledVariableDebt: '0'
+            }
+        ],
+        userEmodeCategoryId: 0
+    })
+
+    mockUiIncentiveDataProvider.getUserReservesIncentivesDataHumanized.mockResolvedValue([
+        {
+            id: '137-0x9528b7a0954f13fd59d91768ae23b5e836de7ce2-0x8f3cf7ad23cd3cadbd9735aff958023239c6a063-0xa97684ead0e402dc232d5a977953df7ecbab3cdb',
+            underlyingAsset: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
+            aTokenIncentivesUserData: {
+            tokenAddress: '0x82E64f49Ed5EC1bC6e43DAD4FC8Af9bb3A2312EE',
+            incentiveControllerAddress: '0x929EC64c34a17401F460460D4B9390518E5B473e',
+            userRewardsInformation: []
+            },
+            vTokenIncentivesUserData: {
+            tokenAddress: '0x8619d80FB0141ba7F184CbF22fd724116D9f7ffC',
+            incentiveControllerAddress: '0x929EC64c34a17401F460460D4B9390518E5B473e',
+            userRewardsInformation: []
+            }
+        },
+        {
+            id: '137-0x9528b7a0954f13fd59d91768ae23b5e836de7ce2-0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39-0xa97684ead0e402dc232d5a977953df7ecbab3cdb',
+            underlyingAsset: '0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39',
+            aTokenIncentivesUserData: {
+            tokenAddress: '0x191c10Aa4AF7C30e871E70C95dB0E4eb77237530',
+            incentiveControllerAddress: '0x929EC64c34a17401F460460D4B9390518E5B473e',
+            userRewardsInformation: []
+            },
+            vTokenIncentivesUserData: {
+            tokenAddress: '0x953A573793604aF8d41F306FEb8274190dB4aE0e',
+            incentiveControllerAddress: '0x929EC64c34a17401F460460D4B9390518E5B473e',
+            userRewardsInformation: []
+            }
+        },
+    ])
 }
