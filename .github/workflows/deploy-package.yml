@@ -1,0 +1,28 @@
+name: Deploy Package
+
+on:
+  push:
+    tags:
+      - v*.*.*
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone Source Code
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: |
+          npm install && npm install -D npm-cli-login
+      - name: Run Test
+        run: |
+          npm test
+      - name: Build Package
+        run: |
+          npm run build
+      - name: Publish Package
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}

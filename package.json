@@ -1,8 +1,10 @@
 {
   "name": "@ericxstone/crypto-earn-mcp",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A MCP server that connects to different Defi to enable agent to find the best yield",
+  "author": "ericxstone",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
     "build": "tsc",
@@ -14,9 +16,8 @@
     "test:only": "npx jest",
     "test:coverage": "npx --coverage"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["MCP", "Defi", "Earn", "Crypto", "AI"],
+  "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.24.0",
     "@babel/preset-env": "^7.24.0",
@@ -31,6 +32,12 @@
     "ts-standard": "^12.0.2",
     "typescript": "^5.8.3"
   },
+  "files": [
+    "dist/src/",
+    "src/",
+    "LICENSE",
+    "README.md"
+  ],
   "dependencies": {
     "@aave/contract-helpers": "^1.33.3",
     "@aave/math-utils": "^1.34.0",
