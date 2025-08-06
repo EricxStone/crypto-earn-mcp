@@ -25,22 +25,19 @@ npm run build
     "crypto-earn": {
       "command": "node",
       "args": [
-        "...PATH_TO_PROJECT.../crypto-earn-mcp/dist/index.js"
+        "-y",
+        "@ericxstone/crypto-earn-mcp"
       ],
     }
   }
 }
 ```
 
-If you are using nvm, use the following command to find the path to your node:
-```bash
-which node
-```
-Copy the path and replace "node" in `"command": "node"` with the path to your node.
+## Usage
 
-4. Start using MCP
+You can start with prompt like `What is the APR of ETH on AAVE?`
 
-You can use prompt like `What is the APR of ETH on AAVE?`
+If you want to check your AAVE position, you can use prompt like `What is my AAVE position on address 0x1234567890123456789012345678901234567890?`
 
 ## Features
 
