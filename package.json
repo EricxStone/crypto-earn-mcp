@@ -1,6 +1,6 @@
 {
   "name": "@ericxstone/crypto-earn-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A MCP server that connects to different Defi to enable agent to find the best yield",
   "author": "ericxstone",
   "main": "dist/index.js",
