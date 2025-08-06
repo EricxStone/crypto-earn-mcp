@@ -23,7 +23,7 @@ npm run build
 {
   "mcpServers": {
     "crypto-earn": {
-      "command": "node",
+      "command": "npx",
       "args": [
         "-y",
         "@ericxstone/crypto-earn-mcp"
