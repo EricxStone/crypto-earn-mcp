@@ -5,6 +5,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod'
 import { resolveProvider } from './providers/resolver.js'
 import { ethers } from 'ethers'
+import { WalletConnect } from './wallet/walletConnect.js'
 
 // Create an MCP server
 const server = new McpServer({
@@ -70,6 +71,37 @@ server.tool(
       content: [{
         type: 'text',
         text: JSON.stringify(data)
+      }]
+    }
+  }
+)
+
+server.tool(
+  'connect-wallet',
+  {},
+  async () => {
+    const walletConnect = new WalletConnect()
+    const walletConnectUri = await walletConnect.connect()
+    if (walletConnectUri === '') {
+      return {
+        content: [{
+          type: 'text',
+          text: 'Wallet has been connected'
+        }]
+      }
+    }
+    // return {
+    //   content: [{
+    //     type: 'image',
+    //     data: walletConnectUri,
+    //     mimeType: 'image/png',
+    //     altText: 'Scan this QR code to connect your wallet'
+    //   }]
+    // }
+    return {
+      content: [{
+        type: 'text',
+        text: walletConnectUri
       }]
     }
   }
