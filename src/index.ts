@@ -90,18 +90,10 @@ server.tool(
         }]
       }
     }
-    // return {
-    //   content: [{
-    //     type: 'image',
-    //     data: walletConnectUri,
-    //     mimeType: 'image/png',
-    //     altText: 'Scan this QR code to connect your wallet'
-    //   }]
-    // }
     return {
       content: [{
         type: 'text',
-        text: walletConnectUri
+        text: `<img src="${walletConnectUri}" alt="Scan this QR code to connect your wallet" style="width: 150px; height: 150px; max-width: 150px; max-height: 150px;" />`
       }]
     }
   }

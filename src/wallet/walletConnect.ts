@@ -1,5 +1,5 @@
 import { SignClient } from '@walletconnect/sign-client'
-// import QRCode from 'qrcode'
+import QRCode from 'qrcode'
 
 export class WalletConnect {
   public async connect (): Promise<string> {
@@ -34,16 +34,17 @@ export class WalletConnect {
       return ''
     }
 
-    // return await this.getQRCode(uri)
-    return uri
+    return await this.getQRCode(uri)
+    // return uri
   }
 
-  // private async getQRCode (uri: string): Promise<string> {
-  //   const qrcodeImg = await QRCode.toDataURL(uri, {
-  //     version: undefined,
-  //     errorCorrectionLevel: 'L',
-  //     maskPattern: 0
-  //   })
-  //   return qrcodeImg
-  // }
+  private async getQRCode (uri: string): Promise<string> {
+    const qrcodeImg = await QRCode.toDataURL(uri, {
+      errorCorrectionLevel: 'L',
+      version: 11,
+      margin: 0,
+      type: 'image/png'
+    })
+    return qrcodeImg
+  }
 }
